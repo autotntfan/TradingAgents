@@ -1,3 +1,4 @@
+from .finmind_utils import get_tw_stock_data, get_tw_stock_news
 from .finnhub_utils import get_data_in_range
 from .googlenews_utils import getNewsData
 from .yfin_utils import YFinanceUtils
@@ -27,6 +28,8 @@ from .interface import (
 
 __all__ = [
     # News and sentiment functions
+    "get_tw_stock_data",
+    "get_tw_stock_news",
     "get_finnhub_news",
     "get_finnhub_company_insider_sentiment",
     "get_finnhub_company_insider_transactions",
