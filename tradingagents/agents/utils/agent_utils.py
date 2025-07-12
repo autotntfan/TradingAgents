@@ -163,6 +163,44 @@ class Toolkit:
 
     @staticmethod
     @tool
+    def get_FinMind_data(
+        symbol: Annotated[str, "Taiwan stock id"],
+        start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
+        end_date: Annotated[str, "End date in yyyy-mm-dd format"],
+        token: Annotated[str, "FinMind API token"] = "",
+    ) -> str:
+        """Retrieve Taiwan stock price data using FinMind."""
+
+        result_data = interface.get_FinMind_data(symbol, start_date, end_date, token or None)
+
+        return result_data
+    
+    @staticmethod
+    @tool
+    def get_tw_stock_news_data(
+        stock_id: Annotated[
+            str,
+            "Search stock_id of a company, e.g. '2330.TW, 2454.TW, etc.",
+        ],
+        curr_date: Annotated[str, "Curr date in yyyy-mm-dd format"],
+        look_back_days: Annotated[int, "How many days to look back"] = 7
+    ) -> str:
+        """
+        Retrieve the latest news from FinMind News based on a stock id and date range.
+        Args:
+            stock_id (str): to search with
+            curr_date (str): Current date in yyyy-mm-dd format
+            look_back_days (int): How many days to look back
+        Returns:
+            str: A formatted string containing the latest news from FinMind News based on the query and date range.
+        """
+
+        finmind_news_results = interface.get_FinMind_news(stock_id, curr_date, look_back_days)
+
+        return finmind_news_results
+    
+    @staticmethod
+    @tool
     def get_stockstats_indicators_report(
         symbol: Annotated[str, "ticker symbol of the company"],
         indicator: Annotated[
