@@ -37,3 +37,15 @@ def get_next_weekday(date):
         return next_weekday
     else:
         return date
+
+
+def parse_ticker(ticker: str) -> tuple[bool, str]:
+    """
+    Return (is_tw_stock, base_id)
+    - '2330.TW' → (True, '2330')
+    - 'AAPL'    → (False, 'AAPL')
+    """
+    t = ticker.strip().upper()
+    if t.endswith(".TW"):
+        return True, t.split(".")[0]
+    return False, t
