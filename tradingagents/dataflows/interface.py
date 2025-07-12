@@ -4,6 +4,7 @@ from .yfin_utils import *
 from .stockstats_utils import *
 from .googlenews_utils import *
 from .finnhub_utils import get_data_in_range
+from .finmind_utils import get_tw_stock_data, get_tw_stock_news
 from dateutil.relativedelta import relativedelta
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
@@ -700,6 +701,42 @@ def get_YFin_data(
     filtered_data = filtered_data.reset_index(drop=True)
 
     return filtered_data
+
+
+def get_FinMind_data(
+    symbol: Annotated[str, "Taiwan stock id"],
+    start_date: Annotated[str, "Start date in yyyy-mm-dd format"],
+    end_date: Annotated[str, "End date in yyyy-mm-dd format"],
+    token: str | None = None,
+) -> pd.DataFrame:
+    """Fetch Taiwan stock data from FinMind."""
+
+    data = get_tw_stock_data(symbol, start_date, end_date, token)
+    return data
+
+def get_FinMind_news(
+    stock_id: Annotated[str, "Query to search with"],
+    curr_date: Annotated[str, "Curr date in yyyy-mm-dd format"],
+    look_back_days: Annotated[int, "how many days to look back"],
+) -> str:
+
+    start_date = datetime.strptime(curr_date, "%Y-%m-%d")
+    before = start_date - relativedelta(days=look_back_days)
+    before = before.strftime("%Y-%m-%d")
+
+    news_results = get_tw_stock_news(stock_id, before, curr_date)
+
+    news_str = ""
+
+    for news in news_results:
+        news_str += (
+            f"### {news['title']} (source: {news['source']}) \n\n{news['snippet']}\n\n"
+        )
+
+    if len(news_results) == 0:
+        return ""
+
+    return f"## {stock_id} FinMind News, from {before} to {curr_date}:\n\n{news_str}"    
 
 
 def get_stock_news_openai(ticker, curr_date):
